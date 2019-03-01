@@ -21,7 +21,7 @@ public class DocService {
 
     private volatile boolean START = false;
 
-    private volatile String DOC_TIME_LATEST = "";
+    private volatile String DOC_TIME_LATEST = System.currentTimeMillis() + "";
 
     public DocService() {
         this.nginxService = new NginxService();
@@ -90,7 +90,7 @@ public class DocService {
     private void nginxStop() {
         nginxService.stop();
         START = false;
-        DOC_TIME_LATEST = "";
+        DOC_TIME_LATEST = System.currentTimeMillis() + "";
     }
 
     public synchronized void docResultRefreshSchedule() {
