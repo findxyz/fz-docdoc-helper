@@ -43,7 +43,7 @@ public class NginxService {
         ProcessUtil.startAsync(NGINX_DIRECTORY, new String[]{NGINX_EXE, "-s", "stop"});
 
         try {
-            Thread.sleep(3000L);
+            Thread.sleep(5000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
