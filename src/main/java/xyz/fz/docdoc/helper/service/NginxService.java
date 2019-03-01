@@ -57,7 +57,8 @@ public class NginxService {
             for (String location : docResult.getData().getDevLocations()) {
                 locations.append(Constants.MOCK_LOCATION_TEMPLATE
                         .replace("@mockLocation@", location)
-                        .replace("@mockUsername@", docConfig.getMockUsername()));
+                        .replace("@mockUsername@", docConfig.getMockUsername())
+                        .replace("@mockHost@", docConfig.getMockAddress()));
             }
         }
 
@@ -65,7 +66,8 @@ public class NginxService {
                 .replace("@mockAddress@", docConfig.getMockAddress())
                 .replace("@programAddress@", docConfig.getProgramAddress())
                 .replace("@localPort@", docConfig.getLocalPort())
-                .replace("@mockLocationList@", locations.toString());
+                .replace("@mockLocationList@", locations.toString())
+                .replace("@programHost@", docConfig.getProgramAddress());
 
         LOGGER.debug("helperConf: {}", helperConf);
 

@@ -29,7 +29,7 @@ public class Constants {
             "\n" +
             "        location / {\n" +
             "            proxy_redirect          off;\n" +
-            "            proxy_set_header        Host            $host;\n" +
+            "            proxy_set_header        Host            @programHost@;\n" +
             "            proxy_set_header        X-Real-IP       $remote_addr;\n" +
             "            proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;\n" +
             "            client_max_body_size    10m;\n" +
@@ -52,7 +52,7 @@ public class Constants {
     public static final String MOCK_LOCATION_TEMPLATE = "" +
             "        location @mockLocation@ {\n" +
             "            proxy_redirect          off;\n" +
-            "            proxy_set_header        Host            $host;\n" +
+            "            proxy_set_header        Host            @mockHost@;\n" +
             "            proxy_set_header        X-Real-IP       $remote_addr;\n" +
             "            proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;\n" +
             "            proxy_set_header        owner           @mockUsername@;\n" +
