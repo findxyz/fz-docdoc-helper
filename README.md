@@ -3,7 +3,7 @@
 
 ### 1.关闭idea中所有打开的标签页
 
-### 2.打开idea form相关的java和form文件
+### 2.打开idea form相关的java和form文件，且标签页当前显示java文件
 
 ### 3.使用idea的rebuild重新编译项目
 
