@@ -126,10 +126,10 @@ public class DocController {
     private void start() {
         mainForm.getTriggerBtn().setEnabled(false);
         mainForm.getTriggerBtn().setText("启动中");
+        formFieldTrigger(false);
         SwingUtilities.invokeLater(() -> {
             try {
                 configStore();
-                formFieldTrigger(false);
                 docService.start();
                 mainForm.getTriggerBtn().setText("暂停");
             } catch (Exception e) {

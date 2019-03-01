@@ -65,12 +65,10 @@ public class DocService {
 
     private void nginxStart() throws Exception {
         DocResult docResult = fetchDocResult();
-        if (docResult == null) {
-            throw new RuntimeException("接口异常无法获取最新列表");
-        }
-        if (docResult.isSuccess()) {
+        if (!StringUtils.equals(docResult.getData().getDocTimeLatest(), DOC_TIME_LATEST)) {
             nginxService.start(docConfig, docResult);
             START = true;
+            DOC_TIME_LATEST = docResult.getData().getDocTimeLatest();
         }
     }
 
@@ -78,16 +76,10 @@ public class DocService {
         try {
             String docHelperLocationsUrl = "/doc/helper/locations";
             String json = HttpUtil.httpGet("http://" + docConfig.getMockAddress() + docHelperLocationsUrl, null);
-            DocResult docResult = BaseUtil.parseJson(json, DocResult.class);
-            if (!StringUtils.equals(docResult.getData().getDocTimeLatest(), DOC_TIME_LATEST)) {
-                DOC_TIME_LATEST = docResult.getData().getDocTimeLatest();
-            } else {
-                docResult.setSuccess(false);
-            }
-            return docResult;
+            return BaseUtil.parseJson(json, DocResult.class);
         } catch (Exception e) {
             LOGGER.error("fetch doc result err: {}", BaseUtil.getExceptionStackTrace(e));
-            return null;
+            throw new RuntimeException("接口异常无法获取最新列表");
         }
     }
 
@@ -98,6 +90,7 @@ public class DocService {
     private void nginxStop() {
         nginxService.stop();
         START = false;
+        DOC_TIME_LATEST = "";
     }
 
     public synchronized void docResultRefreshSchedule() {
