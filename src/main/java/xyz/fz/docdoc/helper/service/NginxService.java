@@ -11,6 +11,7 @@ import xyz.fz.docdoc.helper.util.ProcessUtil;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Map;
 
 public class NginxService {
 
@@ -54,9 +55,10 @@ public class NginxService {
         StringBuilder locations = new StringBuilder();
         if (docResult.getData().getDevLocations() != null
                 && docResult.getData().getDevLocations().size() > 0) {
-            for (String location : docResult.getData().getDevLocations()) {
+            for (Map<String, Object> devLocation : docResult.getData().getDevLocations()) {
                 locations.append(Constants.MOCK_LOCATION_TEMPLATE
-                        .replace("@mockLocation@", location)
+                        .replace("@mockLocation@", ((boolean) devLocation.get("restful") ? "~ " : "") + devLocation.get("url").toString())
+                        .replace("@set_restful_header@", (boolean) devLocation.get("restful") ? "proxy_set_header        restful         true;" : "")
                         .replace("@mockUsername@", docConfig.getMockUsername())
                         .replace("@mockHost@", docConfig.getMockAddress()));
             }

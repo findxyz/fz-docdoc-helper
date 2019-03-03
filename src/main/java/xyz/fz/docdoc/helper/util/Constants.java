@@ -41,7 +41,7 @@ public class Constants {
             "            proxy_pass              http://program_server;\n" +
             "        }\n" +
             "\n" +
-            "@mockLocationList@\n" +
+            "@mockLocationList@" +
             "\n" +
             "        error_page 500 502 503 504 /50x.html;\n" +
             "        location = /50x.html {\n" +
@@ -56,6 +56,7 @@ public class Constants {
             "            proxy_set_header        X-Real-IP       $remote_addr;\n" +
             "            proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;\n" +
             "            proxy_set_header        owner           @mockUsername@;\n" +
+            "            @set_restful_header@\n" +
             "            client_max_body_size    10m;\n" +
             "            client_body_buffer_size 128k;\n" +
             "            proxy_connect_timeout   90;\n" +

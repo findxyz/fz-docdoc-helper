@@ -1,12 +1,13 @@
 package xyz.fz.docdoc.helper.model;
 
 import java.util.List;
+import java.util.Map;
 
 public class DocLocation {
 
     private String docTimeLatest;
 
-    private List<String> devLocations;
+    private List<Map<String, Object>> devLocations;
 
     public String getDocTimeLatest() {
         return docTimeLatest;
@@ -16,11 +17,11 @@ public class DocLocation {
         this.docTimeLatest = docTimeLatest;
     }
 
-    public List<String> getDevLocations() {
+    public List<Map<String, Object>> getDevLocations() {
         return devLocations;
     }
 
-    public void setDevLocations(List<String> devLocations) {
+    public void setDevLocations(List<Map<String, Object>> devLocations) {
         this.devLocations = devLocations;
     }
 
