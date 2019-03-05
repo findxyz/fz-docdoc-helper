@@ -4,6 +4,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xyz.fz.docdoc.helper.event.EventBus;
+import xyz.fz.docdoc.helper.event.EventListener;
+import xyz.fz.docdoc.helper.event.NginxStartErrEvent;
 import xyz.fz.docdoc.helper.form.MainForm;
 import xyz.fz.docdoc.helper.model.DocConfig;
 import xyz.fz.docdoc.helper.service.DocService;
@@ -18,7 +21,7 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
-public class DocController {
+public class DocController implements EventListener<NginxStartErrEvent> {
 
     private static Logger LOGGER = LoggerFactory.getLogger(DocController.class);
 
@@ -38,8 +41,8 @@ public class DocController {
 
         mainForm.getTriggerBtn().addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseReleased(MouseEvent e) {
-                super.mouseReleased(e);
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
                 if (mainForm.getTriggerBtn().isEnabled()) {
                     boolean start = mainForm.getTriggerBtn().getText().equals("启动");
                     if (start) {
@@ -87,9 +90,19 @@ public class DocController {
         docService.configRefresh(docConfig);
     }
 
-    public void initScheduleCheck() {
+    public void init() {
+        initListeners();
+        initScheduleCheck();
+    }
+
+    private void initListeners() {
+        EventBus.addListener(this);
+        EventBus.addListener(docService);
+    }
+
+    private void initScheduleCheck() {
         netStatusAllScheduleCheck();
-        docService.docResultRefreshSchedule();
+        docService.docResultScheduleRefresh();
     }
 
     private void netStatusAllScheduleCheck() {
@@ -169,5 +182,13 @@ public class DocController {
 
     public void destroy() {
         docService.stop();
+    }
+
+    @Override
+    public void on(NginxStartErrEvent event) {
+        formFieldTrigger(true);
+        mainForm.getTriggerBtn().setText("启动");
+        mainForm.getTriggerBtn().setEnabled(true);
+        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, event.getMsg()));
     }
 }

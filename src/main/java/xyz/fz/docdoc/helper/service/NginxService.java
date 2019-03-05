@@ -1,10 +1,14 @@
 package xyz.fz.docdoc.helper.service;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xyz.fz.docdoc.helper.event.EventBus;
+import xyz.fz.docdoc.helper.event.NginxStartErrEvent;
 import xyz.fz.docdoc.helper.model.DocConfig;
 import xyz.fz.docdoc.helper.model.DocResult;
+import xyz.fz.docdoc.helper.util.BaseUtil;
 import xyz.fz.docdoc.helper.util.Constants;
 import xyz.fz.docdoc.helper.util.ProcessUtil;
 
@@ -30,27 +34,33 @@ public class NginxService {
         NGINX_EXE = NGINX_DIRECTORY + "/nginx.exe";
     }
 
-    public void start(DocConfig docConfig, DocResult docResult) throws IOException {
+    public void start(DocConfig docConfig, DocResult docResult) {
+        ProcessUtil.exists("nginx.exe", (exist) -> {
+            if (exist) {
+                throw new RuntimeException("代理服务器已启动");
+            } else {
+                generateHelperConf(docConfig, docResult);
 
-        FileUtils.writeStringToFile(new File(NGINX_HELPER_CONF_FILE), generateHelperConf(docConfig, docResult), Charset.forName("utf-8"));
+                stop();
 
-        stop();
-
-        ProcessUtil.startAsync(NGINX_DIRECTORY, new String[]{NGINX_EXE, "-c", "conf/helper-nginx.conf"});
+                ProcessUtil.startAsync(NGINX_DIRECTORY, new String[]{NGINX_EXE, "-c", "conf/helper-nginx.conf"}, (std2, err2) -> {
+                    if (StringUtils.isNotBlank(err2)) {
+                        EventBus.publishEvent(new NginxStartErrEvent(err2));
+                    }
+                });
+            }
+        });
     }
 
     public void stop() {
-
-        ProcessUtil.startAsync(NGINX_DIRECTORY, new String[]{NGINX_EXE, "-s", "stop"});
-
-        try {
-            Thread.sleep(5000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        ProcessUtil.exists("nginx.exe", (exist) -> {
+            if (exist) {
+                ProcessUtil.startSync(NGINX_DIRECTORY, new String[]{NGINX_EXE, "-s", "stop"}, null);
+            }
+        });
     }
 
-    private String generateHelperConf(DocConfig docConfig, DocResult docResult) {
+    private void generateHelperConf(DocConfig docConfig, DocResult docResult) {
 
         StringBuilder locations = new StringBuilder();
         if (docResult.getData().getDevLocations() != null
@@ -73,6 +83,10 @@ public class NginxService {
 
         LOGGER.debug("helperConf: {}", helperConf);
 
-        return helperConf;
+        try {
+            FileUtils.writeStringToFile(new File(NGINX_HELPER_CONF_FILE), helperConf, Charset.forName("utf-8"));
+        } catch (IOException e) {
+            LOGGER.error("helper-nginx.conf save err: {}", BaseUtil.getExceptionStackTrace(e));
+        }
     }
 }

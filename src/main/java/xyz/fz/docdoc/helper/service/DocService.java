@@ -3,6 +3,8 @@ package xyz.fz.docdoc.helper.service;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xyz.fz.docdoc.helper.event.EventListener;
+import xyz.fz.docdoc.helper.event.NginxStartErrEvent;
 import xyz.fz.docdoc.helper.model.DocConfig;
 import xyz.fz.docdoc.helper.model.DocResult;
 import xyz.fz.docdoc.helper.util.BaseUtil;
@@ -11,7 +13,7 @@ import xyz.fz.docdoc.helper.util.ThreadUtil;
 
 import java.util.concurrent.TimeUnit;
 
-public class DocService {
+public class DocService implements EventListener<NginxStartErrEvent> {
 
     private static Logger LOGGER = LoggerFactory.getLogger(DocService.class);
 
@@ -31,7 +33,7 @@ public class DocService {
         this.docConfig = docConfig;
     }
 
-    public synchronized void start() throws Exception {
+    public synchronized void start() {
 
         docConfigCheck();
 
@@ -63,7 +65,7 @@ public class DocService {
         return HttpUtil.serverTest("http://" + programAddress);
     }
 
-    private void nginxStart() throws Exception {
+    private void nginxStart() {
         DocResult docResult = fetchDocResult();
         if (!StringUtils.equals(docResult.getData().getDocTimeLatest(), DOC_TIME_LATEST)) {
             nginxService.start(docConfig, docResult);
@@ -93,16 +95,21 @@ public class DocService {
         DOC_TIME_LATEST = System.currentTimeMillis() + "";
     }
 
-    public synchronized void docResultRefreshSchedule() {
+    public synchronized void docResultScheduleRefresh() {
         ThreadUtil.executorService().scheduleAtFixedRate(() -> {
             if (START) {
                 try {
                     LOGGER.debug("auto check dev locations...");
                     nginxStart();
                 } catch (Exception e) {
-                    LOGGER.error("doc result refresh schedule err: {}", BaseUtil.getExceptionStackTrace(e));
+                    LOGGER.error("doc result schedule refresh err: {}", BaseUtil.getExceptionStackTrace(e));
                 }
             }
         }, 30, 30, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void on(NginxStartErrEvent event) {
+        DOC_TIME_LATEST = System.currentTimeMillis() + "";
     }
 }

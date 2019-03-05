@@ -29,7 +29,9 @@
               </grid>
             </constraints>
             <properties>
-              <text value="程序数据地址"/>
+              <font name="Microsoft YaHei" size="14"/>
+              <foreground color="-55528"/>
+              <text value="程序主机"/>
             </properties>
           </component>
           <component id="52d6f" class="javax.swing.JTextField" binding="programAddress">
@@ -42,6 +44,7 @@
             </constraints>
             <properties>
               <enabled value="true"/>
+              <font name="Microsoft YaHei" size="14"/>
               <text value=""/>
             </properties>
           </component>
@@ -54,6 +57,7 @@
               </grid>
             </constraints>
             <properties>
+              <font name="Microsoft YaHei" size="14"/>
               <text value="网络状态"/>
             </properties>
           </component>
@@ -76,7 +80,9 @@
               </grid>
             </constraints>
             <properties>
-              <text value="本地测试端口"/>
+              <font name="Microsoft YaHei" size="14"/>
+              <foreground color="-1939712"/>
+              <text value="代理端口"/>
             </properties>
           </component>
           <component id="bbcc2" class="javax.swing.JTextField" binding="localPort">
@@ -89,6 +95,7 @@
             </constraints>
             <properties>
               <enabled value="true"/>
+              <font name="Microsoft YaHei" size="14"/>
               <text value=""/>
             </properties>
           </component>
@@ -104,6 +111,7 @@
         </constraints>
         <properties>
           <enabled value="true"/>
+          <font name="Microsoft YaHei" size="14"/>
           <text value="启动"/>
         </properties>
       </component>
@@ -117,10 +125,16 @@
         <children>
           <component id="5f020" class="javax.swing.JLabel">
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                <minimum-size width="-1" height="35"/>
+                <preferred-size width="-1" height="35"/>
+                <maximum-size width="-1" height="35"/>
+              </grid>
             </constraints>
             <properties>
-              <text value="模拟的用户名"/>
+              <font name="Microsoft YaHei" size="14"/>
+              <foreground color="-15231767"/>
+              <text value="模拟用户"/>
             </properties>
           </component>
           <component id="61ac2" class="javax.swing.JTextField" binding="mockUsername">
@@ -132,6 +146,7 @@
               </grid>
             </constraints>
             <properties>
+              <font name="Microsoft YaHei" size="14"/>
               <text value=""/>
             </properties>
           </component>
@@ -147,14 +162,16 @@
         <children>
           <component id="ad4" class="javax.swing.JLabel">
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false">
                 <minimum-size width="-1" height="35"/>
                 <preferred-size width="-1" height="35"/>
                 <maximum-size width="-1" height="35"/>
               </grid>
             </constraints>
             <properties>
-              <text value="模拟数据地址"/>
+              <font name="Microsoft YaHei" size="14"/>
+              <foreground color="-5810966"/>
+              <text value="模拟主机"/>
             </properties>
           </component>
           <component id="df97e" class="javax.swing.JTextField" binding="mockAddress">
@@ -167,6 +184,7 @@
             </constraints>
             <properties>
               <enabled value="true"/>
+              <font name="Microsoft YaHei" size="14"/>
               <text value=""/>
             </properties>
           </component>
@@ -179,6 +197,7 @@
               </grid>
             </constraints>
             <properties>
+              <font name="Microsoft YaHei" size="14"/>
               <text value="网络状态"/>
             </properties>
           </component>

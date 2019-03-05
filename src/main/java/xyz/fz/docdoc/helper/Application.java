@@ -12,7 +12,7 @@ public class Application {
         MainFrame frame = new MainFrame(docController);
         frame.setVisible(true);
 
-        docController.initScheduleCheck();
+        docController.init();
     }
 
 }

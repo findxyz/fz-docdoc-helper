@@ -56,7 +56,7 @@
     <!--</logger>-->
 
     <!-- Application Loggers -->
-    <logger name="xyz.fz" level="DEBUG"/>
+    <logger name="xyz.fz" level="INFO"/>
 
     <!-- Root Logger -->
     <root level="INFO">
