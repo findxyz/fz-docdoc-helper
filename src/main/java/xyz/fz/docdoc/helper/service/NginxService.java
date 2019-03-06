@@ -35,29 +35,17 @@ public class NginxService {
     }
 
     public void start(DocConfig docConfig, DocResult docResult) {
-        ProcessUtil.exists("nginx.exe", (exist) -> {
-            if (exist) {
-                throw new RuntimeException("代理服务器已启动");
-            } else {
-                generateHelperConf(docConfig, docResult);
+        generateHelperConf(docConfig, docResult);
 
-                stop();
-
-                ProcessUtil.startAsync(NGINX_DIRECTORY, new String[]{NGINX_EXE, "-c", "conf/helper-nginx.conf"}, (std2, err2) -> {
-                    if (StringUtils.isNotBlank(err2)) {
-                        EventBus.publishEvent(new NginxStartErrEvent(err2));
-                    }
-                });
+        ProcessUtil.startAsync(NGINX_DIRECTORY, new String[]{NGINX_EXE, "-c", "conf/helper-nginx.conf"}, (std2, err2) -> {
+            if (StringUtils.isNotBlank(err2)) {
+                EventBus.publishEvent(new NginxStartErrEvent(err2));
             }
         });
     }
 
     public void stop() {
-        ProcessUtil.exists("nginx.exe", (exist) -> {
-            if (exist) {
-                ProcessUtil.startSync(NGINX_DIRECTORY, new String[]{NGINX_EXE, "-s", "stop"}, null);
-            }
-        });
+        ProcessUtil.startSync(NGINX_DIRECTORY, new String[]{NGINX_EXE, "-s", "stop"}, null);
     }
 
     private void generateHelperConf(DocConfig docConfig, DocResult docResult) {

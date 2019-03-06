@@ -9,8 +9,11 @@ import xyz.fz.docdoc.helper.model.DocConfig;
 import xyz.fz.docdoc.helper.model.DocResult;
 import xyz.fz.docdoc.helper.util.BaseUtil;
 import xyz.fz.docdoc.helper.util.HttpUtil;
+import xyz.fz.docdoc.helper.util.ProcessUtil;
 import xyz.fz.docdoc.helper.util.ThreadUtil;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class DocService implements EventListener<NginxStartErrEvent> {
@@ -37,7 +40,11 @@ public class DocService implements EventListener<NginxStartErrEvent> {
 
         docConfigCheck();
 
-        nginxStart();
+        nginxRestart();
+    }
+
+    public synchronized void stop() {
+        nginxStop();
     }
 
     private void docConfigCheck() {
@@ -65,12 +72,30 @@ public class DocService implements EventListener<NginxStartErrEvent> {
         return HttpUtil.serverTest("http://" + programAddress);
     }
 
-    private void nginxStart() {
+    private void nginxRestart() {
         DocResult docResult = fetchDocResult();
         if (!StringUtils.equals(docResult.getData().getDocTimeLatest(), DOC_TIME_LATEST)) {
-            nginxService.start(docConfig, docResult);
-            START = true;
-            DOC_TIME_LATEST = docResult.getData().getDocTimeLatest();
+            ProcessUtil.exists("nginx.exe", (exist) -> {
+                if (exist) {
+                    nginxStop();
+
+                    Set<Integer> running = new HashSet<>();
+                    running.add(1);
+                    while (running.size() > 0) {
+                        try {
+                            Thread.sleep(50L);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        ProcessUtil.exists("nginx.exe", exist2 -> {
+                            if (!exist2) {
+                                running.remove(1);
+                            }
+                        });
+                    }
+                }
+            });
+            nginxStart(docResult);
         }
     }
 
@@ -85,14 +110,16 @@ public class DocService implements EventListener<NginxStartErrEvent> {
         }
     }
 
-    public synchronized void stop() {
-        nginxStop();
-    }
-
     private void nginxStop() {
         nginxService.stop();
         START = false;
         DOC_TIME_LATEST = System.currentTimeMillis() + "";
+    }
+
+    private void nginxStart(DocResult docResult) {
+        nginxService.start(docConfig, docResult);
+        START = true;
+        DOC_TIME_LATEST = docResult.getData().getDocTimeLatest();
     }
 
     public synchronized void docResultScheduleRefresh() {
@@ -100,7 +127,7 @@ public class DocService implements EventListener<NginxStartErrEvent> {
             if (START) {
                 try {
                     LOGGER.debug("auto check dev locations...");
-                    nginxStart();
+                    nginxRestart();
                 } catch (Exception e) {
                     LOGGER.error("doc result schedule refresh err: {}", BaseUtil.getExceptionStackTrace(e));
                 }

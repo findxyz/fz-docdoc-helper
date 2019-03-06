@@ -26,10 +26,10 @@ public class ProcessUtil {
     }
 
     private static void start0(String directory, String[] commands, ProcessHandler processHandler) {
-        ProcessBuilder processBuilder = new ProcessBuilder(commands);
-        processBuilder.directory(new File(directory));
+        LOGGER.debug("commands start: {}", Arrays.asList(commands).toString());
         try {
-            LOGGER.debug("commands start: {}", Arrays.asList(commands).toString());
+            ProcessBuilder processBuilder = new ProcessBuilder(commands);
+            processBuilder.directory(new File(directory));
             Process process = processBuilder.start();
             String std = IOUtils.toString(process.getInputStream(), Charset.forName("gbk"));
             String err = IOUtils.toString(process.getErrorStream(), Charset.forName("gbk"));
