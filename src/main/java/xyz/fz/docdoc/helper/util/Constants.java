@@ -28,6 +28,13 @@ public class Constants {
             "        root           html;\n" +
             "\n" +
             "        location / {\n" +
+            "            add_header Access-Control-Allow-Origin http://localhost:8080;\n" +
+            "            add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS';\n" +
+            "            add_header Access-Control-Allow-Headers 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';\n" +
+            "            add_header Access-Control-Allow-Credentials true;\n" +
+            "            if ($request_method = 'OPTIONS') {\n" +
+            "                return 204;\n" +
+            "            }\n" +
             "            proxy_redirect          off;\n" +
             "            proxy_set_header        Host            @programHost@;\n" +
             "            proxy_set_header        X-Real-IP       $remote_addr;\n" +
@@ -51,6 +58,13 @@ public class Constants {
             "}\n";
     public static final String MOCK_LOCATION_TEMPLATE = "" +
             "        location @mockLocation@ {\n" +
+            "            add_header Access-Control-Allow-Origin http://localhost:8080;\n" +
+            "            add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS';\n" +
+            "            add_header Access-Control-Allow-Headers 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';\n" +
+            "            add_header Access-Control-Allow-Credentials true;\n" +
+            "            if ($request_method = 'OPTIONS') {\n" +
+            "                return 204;\n" +
+            "            }\n" +
             "            proxy_redirect          off;\n" +
             "            proxy_set_header        Host            @mockHost@;\n" +
             "            proxy_set_header        X-Real-IP       $remote_addr;\n" +
