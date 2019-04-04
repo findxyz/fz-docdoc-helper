@@ -138,5 +138,6 @@ public class DocService implements EventListener<NginxStartErrEvent> {
     @Override
     public void on(NginxStartErrEvent event) {
         DOC_TIME_LATEST = System.currentTimeMillis() + "";
+        START = false;
     }
 }
