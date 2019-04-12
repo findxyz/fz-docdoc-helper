@@ -23,21 +23,21 @@ public class NginxService {
 
     private String NGINX_EXE;
 
-    private String NGINX_HELPER_CONF_FILE;
+    private String NGINX_PARAM_CONF;
 
     private String NGINX_DIRECTORY;
 
     NginxService() {
         File directory = new File("");
-        NGINX_DIRECTORY = directory.getAbsolutePath() + "/nginx-1.14.2";
-        NGINX_HELPER_CONF_FILE = NGINX_DIRECTORY + "/conf/helper-nginx.conf";
+        NGINX_DIRECTORY = directory.getAbsolutePath() + "/nginx-1.14.2/";
+        NGINX_PARAM_CONF = "conf/helper-nginx.conf";
         NGINX_EXE = NGINX_DIRECTORY + "/nginx.exe";
     }
 
     public void start(DocConfig docConfig, DocResult docResult) {
         generateHelperConf(docConfig, docResult);
 
-        ProcessUtil.startAsync(NGINX_DIRECTORY, new String[]{NGINX_EXE, "-c", "conf/helper-nginx.conf"}, (std2, err2) -> {
+        ProcessUtil.startAsync(NGINX_DIRECTORY, new String[]{NGINX_EXE, "-c", NGINX_PARAM_CONF}, (std2, err2) -> {
             if (StringUtils.isNotBlank(err2)) {
                 EventBus.publishEvent(new NginxStartErrEvent(err2));
             }
@@ -72,7 +72,7 @@ public class NginxService {
         LOGGER.debug("helperConf: {}", helperConf);
 
         try {
-            FileUtils.writeStringToFile(new File(NGINX_HELPER_CONF_FILE), helperConf, Charset.forName("utf-8"));
+            FileUtils.writeStringToFile(new File(NGINX_DIRECTORY + NGINX_PARAM_CONF), helperConf, Charset.forName("utf-8"));
         } catch (IOException e) {
             LOGGER.error("helper-nginx.conf save err: {}", BaseUtil.getExceptionStackTrace(e));
         }
