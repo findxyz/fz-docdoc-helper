@@ -1,10 +1,8 @@
 package xyz.fz.docdoc.helper.util;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import xyz.fz.docdoc.helper.handler.ProcessExistHandler;
 import xyz.fz.docdoc.helper.handler.ProcessHandler;
 
 import java.io.File;
@@ -44,11 +42,11 @@ public class ProcessUtil {
         LOGGER.debug("commands end: {}", Arrays.asList(commands).toString());
     }
 
-    public static void exists(String processName, ProcessExistHandler processExistHandler) {
+    public static void exists(String processName, ProcessHandler processHandler) {
         startSync(
                 DEFAULT_PROCESS_PATH,
                 new String[]{"cmd", "/C", "tasklist", "|", "findstr", processName},
-                (std, err) -> processExistHandler.handle(StringUtils.isNotBlank(std))
+                processHandler
         );
     }
 

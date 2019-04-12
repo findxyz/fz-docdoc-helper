@@ -75,20 +75,20 @@ public class DocService implements EventListener<NginxStartErrEvent> {
     private void nginxRestart() {
         DocResult docResult = fetchDocResult();
         if (!StringUtils.equals(docResult.getData().getDocTimeLatest(), DOC_TIME_LATEST)) {
-            ProcessUtil.exists("nginx.exe", (exist) -> {
-                if (exist) {
+            ProcessUtil.exists("nginx.exe", (std, err) -> {
+                if (StringUtils.isNotBlank(std)) {
                     nginxStop();
 
                     Set<Integer> running = new HashSet<>();
                     running.add(1);
                     while (running.size() > 0) {
                         try {
-                            Thread.sleep(50L);
+                            Thread.sleep(200L);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        ProcessUtil.exists("nginx.exe", exist2 -> {
-                            if (!exist2) {
+                        ProcessUtil.exists("nginx.exe", (std2, err2) -> {
+                            if (StringUtils.isBlank(std2)) {
                                 running.remove(1);
                             }
                         });
